@@ -12,11 +12,10 @@ import android.graphics.Paint
 import android.graphics.Canvas
 
 val nodes : Int = 5
-val parts : Int = 4
 val scGap : Float = 0.01f
-val delay : Long = 20
+val delay : Long = 15
 val strokeFactor : Int = 90
-val sizeFactor : Float = 4f
+val sizeFactor : Float = 5f
 val foreColor : Int = Color.parseColor("#01579B")
 val backColor : Int = Color.parseColor("#BDBDBD")
 
@@ -25,16 +24,22 @@ fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 
 fun Canvas.drawBallTriPathLine(i : Int, size : Float, scale : Float, paint : Paint) {
+    var parts : Int = 4
+    if (i != nodes - 1) {
+        parts = 6
+    }
     val r : Float = size / sizeFactor
     val sc1 : Float = scale.divideScale(0, parts)
     val sc2 : Float = scale.divideScale(1, parts)
     val sc3 : Float = scale.divideScale(2, parts)
     val sc4 : Float = scale.divideScale(3, parts)
+    val sc5 : Float = scale.divideScale(4, parts)
+    val sc6 : Float = scale.divideScale(5, parts)
     var x1 : Float = 0f
     var x2 : Float = size
-    if (i == nodes - 1) {
-        x1 = size * sc2
-        x2 = size + size * sc4
+    if (i != nodes - 1) {
+        x1 = size * sc5
+        x2 = size + size * sc6
     }
     var cx : Float = (size / 2) * (sc2 + sc4)
     var cy : Float = (-size / 2) * (sc2 - sc4)
@@ -48,7 +53,7 @@ fun Canvas.drawBallTriPathLine(i : Int, size : Float, scale : Float, paint : Pai
 fun Canvas.drawBTPLNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
-    val gap : Float = w / (nodes + 1)
+    val gap : Float = w / (nodes + 2)
     paint.color = foreColor
     paint.strokeWidth = Math.min(w, h) / strokeFactor
     paint.strokeCap = Paint.Cap.ROUND
@@ -100,6 +105,7 @@ class BallTriPathLineView(ctx : Context) : View(ctx) {
 
         fun animate(cb : () -> Unit) {
             if (animated) {
+                cb()
                 try {
                     Thread.sleep(delay)
                     view.invalidate()
