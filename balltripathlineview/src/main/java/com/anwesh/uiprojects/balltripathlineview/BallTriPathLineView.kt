@@ -185,4 +185,26 @@ class BallTriPathLineView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : BallTriPathLineView) {
+
+        private val animator : Animator = Animator(view)
+        private val btpl : BallTriPathLine = BallTriPathLine(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            btpl.draw(canvas, paint)
+            animator.animate {
+                btpl.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            btpl.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
