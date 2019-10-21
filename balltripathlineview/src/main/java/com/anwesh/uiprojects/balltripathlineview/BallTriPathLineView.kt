@@ -208,4 +208,13 @@ class BallTriPathLineView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : BallTriPathLineView {
+            val view : BallTriPathLineView = BallTriPathLineView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
